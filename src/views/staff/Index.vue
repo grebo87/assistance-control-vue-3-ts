@@ -3,8 +3,11 @@ import Table from './Table.vue';
 </script>
 
 <template>
-    <h2>Lista de Personal</h2>
-    <Table />
+    <div class="p-4">
+        <div class="container">
+            <router-view />
+        </div>
+    </div>
 </template>
 
 <style scoped>

@@ -15,7 +15,7 @@ import App from './App.vue';
 library.add(fas);
 
 const app = createApp(App);
-app.use(createPinia);
+app.use(createPinia());
 app.use(router);
 app.component('fa', FontAwesomeIcon)
 app.mount('#app');
