@@ -15,18 +15,19 @@ export const usePersonalStore = defineStore({
     actions: {
         async index() {
             try {
-                const response = await axios.get('https://jsonplaceholder.typicode.com/users');
-
-                this.personal = response.data.map((item: any) => {
+                const response = await axios.get('http://api.asistencia.test/api/personal', { params: { page: {size: 5, number: 1} } });
+                console.log("response  ====> ", response)
+                this.personal = response.data.data.map((item: any) => {
                     return {
-                        name: item.name,
-                        last_name: item.username,
-                        identification_number: item.phone,
-                        code: item.id,
-                        date_of_birth: item.name,
-                        email: item.email,
-                        charge: 'Administrativo',
-                        status: 'Activo'
+                        id: item.id,
+                        name: item.attributes.name,
+                        last_name: item.attributes.last_name,
+                        identification_number: item.attributes.identification_number,
+                        code: item.attributes.code,
+                        date_of_birth: item.attributes.date_of_birth,
+                        email: item.attributes.email,
+                        charge: item.attributes.charge,
+                        status: item.attributes.status,
                     }
                 })
                 

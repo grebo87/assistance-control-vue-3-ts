@@ -1,4 +1,5 @@
 export interface Personal {
+    id: string,
     name: string,
     last_name: string,
     identification_number?: string,

@@ -12,7 +12,7 @@
                     </router-link>
                 </li>
                 <li class="nav-item">
-                    <router-link to="personal" class="nav-link">
+                    <router-link to="/personal" class="nav-link">
                         <span data-feather="users" class="align-text-bottom"></span>
                         Personal
                     </router-link>
