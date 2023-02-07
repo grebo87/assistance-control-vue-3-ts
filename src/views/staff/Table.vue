@@ -16,6 +16,13 @@ const edit = (id: string) => {
     router.push({ name: 'personal.edit', params: { id: id } });
 }
 
+const destroy = (id: string) => {
+    const confir = confirm('&iquest;Esta seguro que desea eliminar a esta persona?');
+    if (confir == true) {
+        personalStore.delete(id);
+    }
+};
+
 </script>
 
 <template>
@@ -39,7 +46,7 @@ const edit = (id: string) => {
                             <fa icon="edit" />
                         </span>
                         <a href="#" class='btn btn-danger btn-sm'
-                            onclick="if(confirm('&iquest;Esta seguro que desea eliminar a esta persona?')) return true;  else return false;">
+                            @click="destroy(perso.id)">
                             <fa icon="trash" />
                         </a>
                     </td>

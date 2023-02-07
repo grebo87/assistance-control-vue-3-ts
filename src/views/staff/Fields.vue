@@ -9,7 +9,7 @@ import router from '../../routes';
 
 const personalStore = usePersonalStore();
 
-const { errors, message } = storeToRefs(personalStore);
+const { errors, message, statusRespose } = storeToRefs(personalStore);
 
 const form: Personal = reactive({
     id: '',
@@ -42,7 +42,7 @@ const onSubmit = async () => {
     if (validate.value.$invalid) return;
 
     await personalStore.store(form);
-    if (errors.value.length == 0) {
+    if (statusRespose.value == true) {
         router.push({ name: 'personal.index' });
     }
 };

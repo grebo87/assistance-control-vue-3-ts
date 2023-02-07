@@ -1,5 +1,11 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { usePersonalStore } from '../../stores/personal.store';
 import Table from './Table.vue';
+
+const personalStore = usePersonalStore();
+
+const { message, statusRespose} = storeToRefs(personalStore);
 </script>
 
 <template>
@@ -10,6 +16,9 @@ import Table from './Table.vue';
                     <div class="row mb-2">
                         <div class="col">
                             <h2>Lista de Personal</h2>
+                        </div>
+                        <div v-if="message" :class=" statusRespose == true ? 'alert alert-success' : 'alert alert-danger'">
+                            {{ message }}
                         </div>
                         <div class="col">
                             <router-link :to="{ name: 'personal.create' }" class="btn btn-primary float-right">

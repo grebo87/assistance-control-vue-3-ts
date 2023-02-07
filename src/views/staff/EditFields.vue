@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted, onBeforeMount } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
-import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
-
+import { useRoute } from 'vue-router';
 import { usePersonalStore } from '../../stores/personal.store';
 import { Personal } from '../../models/Personal';
 import router from '../../routes';
@@ -14,25 +13,11 @@ const id = route.params.id;
 
 const personalStore = usePersonalStore();
 
+const { errors, message, personal, statusRespose } = storeToRefs(personalStore);
 
-({ personal } = storeToRefs(personalStore));
-await personalStore.getById(id);
-console.log(" personal ====> ", personal);
-
-const form: Personal = reactive({
-    id: personal.id,
-    name: personal.name,
-    last_name: '',
-    identification_number: '',
-    code: '',
-    date_of_birth: '',
-    email: '',
-    charge: '',
-    status: ''
+onBeforeMount( async () => {
+    personalStore.getById(id);
 });
-
-
-
 
 const rules = {
     name: { reuired: helpers.withMessage('El nombre es requerido.', required) },
@@ -45,17 +30,19 @@ const rules = {
     status: { reuired: helpers.withMessage('El Estado es requerido.', required) }
 };
 
-const validate = useVuelidate<Personal>(rules, form);
+const validate = useVuelidate<Personal>(rules, personal);
 
 const onSubmit = async () => {
     validate.value.$touch();
 
     if (validate.value.$invalid) return;
 
-    const resp = await personalStore.store(form);
-
-    alert(resp);
-    router.push({ name: 'personal' });
+    const resp = await personalStore.update(personal.value.id,personal.value);
+    
+    if (statusRespose.value == true) {
+        router.push({ name: 'personal.index' });
+    }
+    
 };
 
 </script>
@@ -63,16 +50,21 @@ const onSubmit = async () => {
 
 <template>
     <form class="row g-3 " @submit.prevent="onSubmit">
+        <div v-if="errors.length > 0" class="alert alert-danger">
+            <ul>
+                <li v-for="error in errors" >{{ error }}</li>
+            </ul>
+        </div>
         <div class="col-md-6">
-            <label for="name" class="form-label">Nombre {{ form.name }}</label>
-            <input type="text" class="form-control" id="name" name="name" v-model="form.name">
+            <label for="name" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="name" name="name" v-model="personal.name">
             <span v-if="validate.name.$error" class="text-danger">
                 {{ validate.name.$errors[0].$message }}
             </span>
         </div>
         <div class="col-md-6">
             <label for="last_name" class="form-label">Apellido</label>
-            <input type="text" class="form-control" id="last_name" name="last_name" v-model="form.last_name">
+            <input type="text" class="form-control" id="last_name" name="last_name" v-model="personal.last_name">
             <span v-if="validate.last_name.$error" class="text-danger">
                 {{ validate.last_name.$errors[0].$message }}
             </span>
@@ -81,7 +73,7 @@ const onSubmit = async () => {
         <div class="col-md-6">
             <label for="identification_number" class="form-label">Cedula</label>
             <input type="number" class="form-control" id="identification_number" name="identification_number"
-                v-model="form.identification_number">
+                v-model="personal.identification_number">
             <span v-if="validate.identification_number.$error" class="text-danger">
                 {{ validate.identification_number.$errors[0].$message }}
             </span>
@@ -89,7 +81,7 @@ const onSubmit = async () => {
 
         <div class="col-md-6">
             <label for="code" class="form-label">Codigó Personal</label>
-            <input type="text" class="form-control" id="code" name="code" v-model="form.code">
+            <input type="text" class="form-control" id="code" name="code" v-model="personal.code">
             <span v-if="validate.code.$error" class="text-danger">
                 {{ validate.code.$errors[0].$message }}
             </span>
@@ -98,7 +90,7 @@ const onSubmit = async () => {
         <div class="col-md-6">
             <label for="date_of_birth" class="form-label">Fecha de Nacimiento</label>
             <input type="date" class="form-control" id="date_of_birth" name="date_of_birth"
-                v-model="form.date_of_birth">
+                v-model="personal.date_of_birth">
             <span v-if="validate.date_of_birth.$error" class="text-danger">
                 {{ validate.date_of_birth.$errors[0].$message }}
             </span>
@@ -106,7 +98,7 @@ const onSubmit = async () => {
 
         <div class="col-md-6">
             <label for="email" class="form-label">Correo</label>
-            <input type="email" class="form-control" id="email" name="email" v-model="form.email">
+            <input type="email" class="form-control" id="email" name="email" v-model="personal.email">
             <span v-if="validate.email.$error" class="text-danger">
                 {{ validate.email.$errors[0].$message }}
             </span>
@@ -114,7 +106,7 @@ const onSubmit = async () => {
 
         <div class="col-md-6">
             <label for="charge" class="form-label">Cargo</label>
-            <select id="charge" class="form-select" name="charge" v-model="form.charge">
+            <select id="charge" class="form-select" name="charge" v-model="personal.charge">
                 <option selected value=""> Elige una opción </option>
                 <option value="Administrativo">Administrativo</option>
                 <option value="Obrero">Obrero</option>
@@ -125,7 +117,7 @@ const onSubmit = async () => {
         </div>
         <div class="col-md-6">
             <label for="status" class="form-label">Estatus</label>
-            <select id="status" class="form-select" name="status" v-model="form.status">
+            <select id="status" class="form-select" name="status" v-model="personal.status">
                 <option selected value=""> Elige una opción </option>
                 <option value="Activo">Activo</option>
                 <option value="Jubilado"> Jubilado</option>

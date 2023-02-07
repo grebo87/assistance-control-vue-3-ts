@@ -4,18 +4,30 @@ import axios from 'axios';
 
 export type PersonalState = {
     personals: Personal[];
-    personal: Personal | null;
+    personal: Personal;
     errors: any;
     message: string;
+    statusRespose: boolean;
 };
 
 export const usePersonalStore = defineStore({
     id: 'personal',
     state: () => ({
         personals: [],
-        personal: null,
+        personal: {
+            id: '',
+            name: '',
+            last_name: '',
+            identification_number: '',
+            code: '',
+            date_of_birth: '',
+            email: '',
+            charge: '',
+            status: ''
+        },
         errors: [],
-        message: ''
+        message: '',
+        statusRespose: false
     } as PersonalState),
 
     actions: {
@@ -44,29 +56,54 @@ export const usePersonalStore = defineStore({
         async store(data: Personal) {
 
             const response = await axios.post('http://api.asistencia.test/api/personal', data);
-            
+
             if (response.data.status == true) {
                 this.message = response.data.message;
+                this.statusRespose = true;
             }
 
-            if(response.data.status == false){
+            if (response.data.status == false) {
                 this.message = response.data.message;
                 this.errors = response.data.errors;
+                this.statusRespose = false;
             }
         },
         async getById(id: any) {
             const response = await axios.get(`http://api.asistencia.test/api/personal/${id}`);
             this.personal = response.data.data;
         },
-        async update(id: string, params: any) {
-            await axios.put(`http://api.asistencia.test/api/personal/${id}`, params);
+        async update(id: string, params: Personal) {
+            const response = await axios.put(`http://api.asistencia.test/api/personal/${id}`, params);
+            
+            if (response.data.status == true) {
+                this.message = response.data.message;
+                this.personal = response.data.data;
+                this.statusRespose = true;
+            }
+
+            if (response.data.status == false) {
+                this.message = response.data.message;
+                this.errors = response.data.errors;
+                this.statusRespose = false;
+            }
         },
         async delete(id: string) {
+            const response = await axios.delete(`http://api.asistencia.test/api/personal/${id}`);
 
-            await axios.delete(`http://api.asistencia.test/api/personal/${id}`);
+            console.log("response.data ======> ", response.data);
 
-            // remove personal from list after deleted
-            this.personals = this.personals.filter((x: Personal) => x.id !== id);
+            if (response.data.status == true) {
+                // remove personal from list after deleted
+                this.personals = this.personals.filter((x: Personal) => x.id !== id);
+                this.statusRespose = true;
+                this.message = response.data.message;
+            }
+
+            if (response.data.status == false) {
+                this.message = response.data.message;
+                this.errors = response.data.errors;
+                this.statusRespose = false;
+            }
         }
     }
 });
