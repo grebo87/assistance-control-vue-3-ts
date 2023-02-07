@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { Personal } from '../../models/Personal';
+import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import router from '../../routes';
 import { usePersonalStore } from '../../stores/personal.store';
 
-const personal = ref<Personal[]>([]);
 const personalStore = usePersonalStore();
 
+const { personals } = storeToRefs(personalStore);
 
 onMounted(() => {
     personalStore.index();
-
-    personal.value = personalStore.personal;
 });
 
 const edit = (id: string) => {
-    console.log(id);
     router.push({ name: 'personal.edit', params: { id: id } });
 }
 
@@ -33,12 +30,12 @@ const edit = (id: string) => {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="perso in personal" :key="perso.code">
+                <tr v-for="perso in personals" :key="perso.id">
                     <td>{{ perso.name }}</td>
                     <td>{{ perso.identification_number }}</td>
                     <td>{{ perso.code }}</td>
                     <td>
-                        <span class='btn btn-primary btn-sm' @click="edit(perso.code)">
+                        <span class='btn btn-primary btn-sm' @click="edit(perso.id)">
                             <fa icon="edit" />
                         </span>
                         <a href="#" class='btn btn-danger btn-sm'

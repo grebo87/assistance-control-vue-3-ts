@@ -2,18 +2,26 @@
 import { ref, reactive } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
+import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
+
 import { usePersonalStore } from '../../stores/personal.store';
 import { Personal } from '../../models/Personal';
 import router from '../../routes';
 
+const route = useRoute();
+const id = route.params.id;
+
 const personalStore = usePersonalStore();
 
-const { errors, message } = storeToRefs(personalStore);
+
+({ personal } = storeToRefs(personalStore));
+await personalStore.getById(id);
+console.log(" personal ====> ", personal);
 
 const form: Personal = reactive({
-    id: '',
-    name: '',
+    id: personal.id,
+    name: personal.name,
     last_name: '',
     identification_number: '',
     code: '',
@@ -22,6 +30,9 @@ const form: Personal = reactive({
     charge: '',
     status: ''
 });
+
+
+
 
 const rules = {
     name: { reuired: helpers.withMessage('El nombre es requerido.', required) },
@@ -41,10 +52,10 @@ const onSubmit = async () => {
 
     if (validate.value.$invalid) return;
 
-    await personalStore.store(form);
-    if (errors.value.length == 0) {
-        router.push({ name: 'personal.index' });
-    }
+    const resp = await personalStore.store(form);
+
+    alert(resp);
+    router.push({ name: 'personal' });
 };
 
 </script>
@@ -52,13 +63,8 @@ const onSubmit = async () => {
 
 <template>
     <form class="row g-3 " @submit.prevent="onSubmit">
-        <div v-if="errors.length > 0" class="alert alert-danger">
-            <ul>
-                <li v-for="error in errors" >{{ error }}</li>
-            </ul>
-        </div>
         <div class="col-md-6">
-            <label for="name" class="form-label">Nombre</label>
+            <label for="name" class="form-label">Nombre {{ form.name }}</label>
             <input type="text" class="form-control" id="name" name="name" v-model="form.name">
             <span v-if="validate.name.$error" class="text-danger">
                 {{ validate.name.$errors[0].$message }}
