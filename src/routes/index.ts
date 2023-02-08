@@ -24,6 +24,11 @@ const router = createRouter({
             name: 'personal.edit',
             component: () => import("../views/staff/Edit.vue")
         },
+        {
+            path:'/assistance',
+            name: 'assistance.index',
+            component: () => import("../views/assistance/Index.vue")
+        },
 
 
         // catch all redirect to home page

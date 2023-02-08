@@ -23,7 +23,14 @@ export const usePersonalStore = defineStore({
             date_of_birth: '',
             email: '',
             charge: '',
-            status: ''
+            status: '',
+            assistance: {
+                id: '',
+                date: '',
+                start_time: '',
+                time_of: '',
+                personal_id: '',
+            }
         },
         errors: [],
         message: '',
@@ -48,6 +55,15 @@ export const usePersonalStore = defineStore({
                         status: item.status,
                     }
                 })
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async getPersonalWithAssistance() {
+            try {
+                const response = await axios.get(`http://api.asistencia.test/api/personal`, { params: { page: 1, per_page: 15, assistance: true } });
+                this.personals = response.data.data
 
             } catch (error) {
                 console.log(error);
@@ -104,6 +120,46 @@ export const usePersonalStore = defineStore({
                 this.errors = response.data.errors;
                 this.statusRespose = false;
             }
-        }
+        },
+        async markStartTime(id:string){
+            const response = await axios.post(`http://api.asistencia.test/api/personal/${id}/mark-start-time`);
+
+            if (response.data.status == true) {
+                // find personal from list
+                let personal = this.personals.map((person: any) => {
+                    if(person.id == id){
+                        person.assistance = response.data.data; 
+                    }
+                });
+                this.statusRespose = true;
+                this.message = response.data.message;
+            }
+
+            if (response.data.status == false) {
+                this.message = response.data.message;
+                this.errors = response.data.errors;
+                this.statusRespose = false;
+            }
+        },
+        async markTimeOf(id:string){
+            const response = await axios.put(`http://api.asistencia.test/api/personal/${id}/mark-time-of`);
+
+            if (response.data.status == true) {
+                // find personal from list
+                this.personals.map((person: any) => {
+                    if(person.id == id){
+                        person.assistance = response.data.data; 
+                    }
+                });
+                this.statusRespose = true;
+                this.message = response.data.message;
+            }
+
+            if (response.data.status == false) {
+                this.message = response.data.message;
+                this.errors = response.data.errors;
+                this.statusRespose = false;
+            }
+        },
     }
 });
