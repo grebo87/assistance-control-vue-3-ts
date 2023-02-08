@@ -1,5 +1,3 @@
-import { Assistance } from "./Assistance"
-
 export interface Personal {
     id: string,
     name: string,
