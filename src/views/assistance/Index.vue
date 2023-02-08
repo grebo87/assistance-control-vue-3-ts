@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import moment from 'moment';
 import { storeToRefs } from 'pinia';
 import { usePersonalStore } from '../../stores/personal.store';
 import Table from './Table.vue';
@@ -27,7 +28,7 @@ const { message, statusRespose} = storeToRefs(personalStore);
                     </div>
                     <div class="row mb-2">
                         <div class="col">
-                            <h2>Registro de Asistencia del dia 07-02-2023</h2>
+                            <h2>Registro de Asistencia del dia {{ moment().format('DD-MM-YYYY') }}</h2>
                         </div>
                     </div>
                 </div>
