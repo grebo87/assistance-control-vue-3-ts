@@ -23,6 +23,12 @@
                         Asistencia
                     </router-link>
                 </li>
+                <li class="nav-item">
+                    <router-link :to="{ name: 'absences.index' }" class="nav-link">
+                        <span data-feather="slash" class="align-text-bottom"></span>
+                        Inasistencias
+                    </router-link>
+                </li>
             </ul>
         </div>
     </nav>

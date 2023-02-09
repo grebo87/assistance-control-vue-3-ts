@@ -90,7 +90,7 @@ export const usePersonalStore = defineStore({
         },
         async update(id: string, params: Personal) {
             const response = await axios.put(`http://api.asistencia.test/api/personal/${id}`, params);
-            
+
             if (response.data.status == true) {
                 this.message = response.data.message;
                 this.personal = response.data.data;
@@ -106,8 +106,6 @@ export const usePersonalStore = defineStore({
         async delete(id: string) {
             const response = await axios.delete(`http://api.asistencia.test/api/personal/${id}`);
 
-            console.log("response.data ======> ", response.data);
-
             if (response.data.status == true) {
                 // remove personal from list after deleted
                 this.personals = this.personals.filter((x: Personal) => x.id !== id);
@@ -121,14 +119,14 @@ export const usePersonalStore = defineStore({
                 this.statusRespose = false;
             }
         },
-        async markStartTime(id:string){
+        async markStartTime(id: string) {
             const response = await axios.post(`http://api.asistencia.test/api/personal/${id}/mark-start-time`);
 
             if (response.data.status == true) {
                 // find personal from list
                 let personal = this.personals.map((person: any) => {
-                    if(person.id == id){
-                        person.assistance = response.data.data; 
+                    if (person.id == id) {
+                        person.assistance = response.data.data;
                     }
                 });
                 this.statusRespose = true;
@@ -141,14 +139,14 @@ export const usePersonalStore = defineStore({
                 this.statusRespose = false;
             }
         },
-        async markTimeOf(id:string){
+        async markTimeOf(id: string) {
             const response = await axios.put(`http://api.asistencia.test/api/personal/${id}/mark-time-of`);
 
             if (response.data.status == true) {
                 // find personal from list
                 this.personals.map((person: any) => {
-                    if(person.id == id){
-                        person.assistance = response.data.data; 
+                    if (person.id == id) {
+                        person.assistance = response.data.data;
                     }
                 });
                 this.statusRespose = true;
@@ -161,5 +159,85 @@ export const usePersonalStore = defineStore({
                 this.statusRespose = false;
             }
         },
+        async findAbsenceById(id: any) {
+            const response = await axios.get(`http://api.asistencia.test/api/personal/${id}/get-absences`);
+            
+            return response.data.data;
+        },
+        async verifyAbsenceByPersonalId(id: string) {
+            const response = await axios.get(`http://api.asistencia.test/api/personal/${id}/verify-absences`);
+
+            const { verify } = response.data.data;
+
+            return verify;
+        },
+        async createAbsence(id: string, data: any) {
+            const response = await axios.post(`http://api.asistencia.test/api/personal/${id}/store-absences`, data);
+
+            if (response.data.status == true) {
+                this.message = response.data.message;
+                this.statusRespose = true;
+                this.personals.map((person: any) => {
+                    if (person.id == id) {
+                        person.absence = response.data.data;
+                    }
+                });
+            }
+
+            if (response.data.status == false) {
+                this.message = response.data.message;
+                this.errors = response.data.errors;
+                this.statusRespose = false;
+            }
+        },
+        async getPersonalWithAbsence() {
+            try {
+                const response = await axios.get(`http://api.asistencia.test/api/personal`, { params: { page: 1, per_page: 15, absence: true } });
+                this.personals = response.data.data;
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async deleteAbsence(id: string) {
+            const response = await axios.delete(`http://api.asistencia.test/api/personal/${id}/destroy-absences`);
+
+            if (response.data.status == true) {
+                // remove personal from list after deleted
+                this.personals.map((x: any) => {
+                    if(x.id == id){
+                        delete x.absence
+                    }
+                });
+                this.statusRespose = true;
+                this.message = response.data.message;
+            }
+
+            if (response.data.status == false) {
+                this.message = response.data.message;
+                this.errors = response.data.errors;
+                this.statusRespose = false;
+            }
+        },
+        async updateAbsence(id:string, data:any) {
+            const response = await axios.put(`http://api.asistencia.test/api/personal/${id}/update-absences`, data);
+
+            if (response.data.status == true) {
+                this.message = response.data.message;
+                this.statusRespose = true;
+                this.personals.map((person: any) => {
+                    if (person.id == id) {
+                        person.absence = response.data.data;
+                    }
+                });
+            }
+
+            if (response.data.status == false) {
+                this.message = response.data.message;
+                this.errors = response.data.errors;
+                this.statusRespose = false;
+            }
+        }
     }
 });
+
+

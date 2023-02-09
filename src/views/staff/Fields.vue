@@ -43,8 +43,6 @@ const onSubmit = async () => {
 
     await personalStore.store(form);
 
-    console.log(" statusRespose ========> ", statusRespose.value);
-
     if (statusRespose.value == true) {
         router.push({ name: 'personal.index' });
     }

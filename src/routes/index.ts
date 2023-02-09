@@ -29,8 +29,21 @@ const router = createRouter({
             name: 'assistance.index',
             component: () => import("../views/assistance/Index.vue")
         },
-
-
+        {
+            path: '/absences',
+            name: 'absences.index',
+            component: () => import("../views/absences/Index.vue")
+        },
+        {
+            path: '/absences/create',
+            name: 'absences.create',
+            component: () => import("../views/absences/Create.vue")
+        },
+        {
+            path: '/absences/edit/:id',
+            name: 'absences.edit',
+            component: () => import("../views/absences/Edit.vue")
+        },
         // catch all redirect to home page
         { path: '/:pathMatch(.*)*', redirect: '/' }
     ]
