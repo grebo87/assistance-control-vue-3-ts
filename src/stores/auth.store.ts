@@ -8,7 +8,7 @@ export const useAuthStore = defineStore({
     id: 'auth',
     state: () => ({
         user: null,
-        loggedIn: false,
+        loggedIn: Boolean(localStorage.getItem('isLoggedIn')),
         returnUrl: '/dashboard',
         errors: [],
         message: '',
@@ -27,7 +27,7 @@ export const useAuthStore = defineStore({
                 this.statusRespose = true;
                 this.loggedIn = true;
 
-                console.log(" this.loggedIn ======> ", this.loggedIn);
+                localStorage.setItem('isLoggedIn', JSON.stringify(this.loggedIn) );
                 // redirect to previous url or default to home page
                 router.push(this.returnUrl);
             } catch (error:any) {
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore({
             this.user = null;
             this.statusRespose = false;
             this.loggedIn = false;
-            // localStorage.removeItem('user');
+            localStorage.removeItem('isLoggedIn');
             router.push('/login');
         },
         async getUser(){
