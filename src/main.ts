@@ -6,6 +6,7 @@ import * as feather from 'feather-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 
 import router from './routes';
@@ -22,3 +23,4 @@ app.mount('#app');
 
 
 feather.replace();
+axios.defaults.withCredentials = true;

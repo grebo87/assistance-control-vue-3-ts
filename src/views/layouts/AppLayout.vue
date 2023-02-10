@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
 import Header from '../../components/layouts/Header.vue';
 import Nav from '../../components/layouts/Nav.vue';
 import TitlePage from '../../components/layouts/TitlePage.vue';
+import { useAuthStore } from '../../stores/auth.store';
 
+const authStore = useAuthStore();
 
+const { loggedIn, returnUrl } = storeToRefs(authStore);
 
 const currentRute = useRoute();
 

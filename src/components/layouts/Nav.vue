@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import $ from 'jquery';
+
+$(() => {
+    $('.dropdown-toggle').click(() => {
+        $('.submenu').slideToggle();
+    });
+});
+
 </script>
 
 <template>
@@ -29,7 +37,32 @@
                         Inasistencias
                     </router-link>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link dropdown-toggle">
+                        <span data-feather="folder" class="align-text-bottom"></span>
+                        Autorizaciones
+                    </a>
+
+                    <ul class="submenu" style="display: none;">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Permisos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">Vacaciones</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </nav>
 </template>
+
+<style scoped>
+.nav .submenu .nav-item a {
+    padding-left: 10px;
+}
+
+.nav .submenu li {
+    list-style: none;
+}
+</style>
