@@ -58,6 +58,21 @@ const router = createRouter({
             name: 'asistencia',
             component: Dashboard
         },
+        {
+            path: '/users',
+            name: 'users.index',
+            component: () => import('../views/users/Index.vue')
+        },
+        {
+            path: '/users/create',
+            name: 'users.create',
+            component: () => import('../views/users/Create.vue')
+        },
+        {
+            path: '/users/edit/:id',
+            name: 'users.edit',
+            component: () => import('../views/users/Edit.vue')
+        },
         // catch all redirect to home page
         //{ path: '/:pathMatch(.*)*', redirect: '/dashboard' }
     ]
@@ -74,7 +89,7 @@ router.beforeEach(async (to) => {
     const publicPages = ['/login', '/', '/asistencia'];
     const authRequired = publicPages.includes(to.path);
 
-    console.log("to.path, authRequired, loggedIn.value ======> ", to.path, authRequired, loggedIn.value, !authRequired && loggedIn.value == false);
+    // console.log("to.path, authRequired, loggedIn.value ======> ", to.path, authRequired, loggedIn.value, !authRequired && loggedIn.value == false);
 
     
     if (!authRequired && loggedIn.value == false) {
@@ -84,7 +99,7 @@ router.beforeEach(async (to) => {
 
     if (authRequired && loggedIn.value == true) {
         returnUrl.value = to.fullPath;
-        console.log("el usuario esta logueado y nodeberia ver nada de esto");
+        // console.log("el usuario esta logueado y nodeberia ver nada de esto");
         return '/dashboard';
     }
 });

@@ -24,6 +24,10 @@ const rules = {
 const validate = useVuelidate(rules, form);
 
 const onSubmit = () => {
+
+
+    // console.log(cookies.keys()); 
+    // return;
     validate.value.$touch();
 
     if (validate.value.$invalid) return;

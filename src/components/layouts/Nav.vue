@@ -37,7 +37,7 @@ $(() => {
                         Inasistencias
                     </router-link>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link dropdown-toggle">
                         <span data-feather="folder" class="align-text-bottom"></span>
                         Autorizaciones
@@ -51,6 +51,12 @@ $(() => {
                             <a href="#" class="nav-link">Vacaciones</a>
                         </li>
                     </ul>
+                </li> -->
+                <li class="nav-item">
+                    <router-link :to="{ name: 'users.index' }" class="nav-link">
+                        <span data-feather="users" class="align-text-bottom"></span>
+                        Usuarios
+                    </router-link>
                 </li>
             </ul>
         </div>
